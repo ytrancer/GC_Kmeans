@@ -45,12 +45,30 @@ wssplot <- function(data, nc = 15, set.seed = 1234){
     set.seed(1234)
     wss[i] <- sum(kmeans(x = data, centers = i, nstart = 25)$withinss)
   }
-  plot(1:nc, wss, type = 'b', xlab = 'Number of Clusters', ylab = 'Within Group Sum of Square',
+  plot(1:nc, wss, type = 'b', xlab = 'Number of Clusters', ylab = 'Within Group Sum of Squares',
        main = 'Elbow Method Plot to Find Optimal Number of Clusters', frame.plot = T,
        col = 'blue', lwd = 1.5)
 }
 
 wssplot(z_df)
 
-# fviz(x = z_df, FUNcluster = kmeans, method = 'wss')
+# Let's try with 3 clusters
+
+df_clusters <- kmeans(z_df, 3)
+
 fviz_cluster(df_clusters, data = z_df)
+
+# Evaluate model's performance
+
+df_clusters$centers
+
+# 3 rows refer to the number of clusters. Numbers across each row indicate 
+# the clustar's average value for the interest listed at th etop of the column.
+# Because values are standardised, positive values are abover the overall
+# mean and negative are bellow. So, the first cluster has the highest average
+# interest for Experience (1.887), second cluster has the highest interest for
+# Income, the third - for Gender (although the value is small).
+
+# Assign clusters to the original data with customer ID's
+
+df$cluster <- df_clusters$cluster
